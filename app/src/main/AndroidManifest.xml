@@ -8,6 +8,30 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"></application>
+        android:theme="@style/AppTheme">
+        <activity android:name=".updateVegVendor"></activity>
+        <activity android:name=".updateVeg" />
+        <activity android:name=".updateInfoVendor" />
+        <activity android:name=".viewInfoVendor" />
+        <activity android:name=".popup_viewInfo" />
+        <activity android:name=".updateInfo" />
+        <activity android:name=".viewInfo" />
+        <activity android:name=".userProfile" />
+        <activity android:name=".sign" />
+        <activity android:name=".login" />
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
+
+
+    </application>
 
 </manifest>
