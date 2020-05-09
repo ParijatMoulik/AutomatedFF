@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,6 +39,10 @@ public class viewInfo extends AppCompatActivity {
     Button delete,update;
     FloatingActionButton close;
 
+    Dialog alertDialog;
+    Button buy,not_now;
+    ListView alert_veg;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +65,6 @@ public class viewInfo extends AppCompatActivity {
             ArrayList<String> values = new ArrayList<>();
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for (DataSnapshot subSnap : dataSnapshot.getChildren())
-//                    keys.add(subSnap.getKey());
-//                for (String key : keys) {
-//                    String value = dataSnapshot.child(key).getValue().toString();
-//                    values.add(value);
-//                }
 
                 for(DataSnapshot subSnap: dataSnapshot.getChildren()) {
                        String value=dataSnapshot.child(subSnap.getKey()).getValue().toString();
@@ -149,6 +148,89 @@ public class viewInfo extends AppCompatActivity {
             startActivity(intent1);
             finish();
         });
+
+
+        //dialog for notification
+        //**************************************************************************************
+
+        alertDialog =new Dialog(viewInfo.this);
+        alertDialog.setContentView(R.layout.activity_alert_veg);
+        alertDialog.setTitle("My Custom Alert Dialog");
+
+        buy=(Button)alertDialog.findViewById(R.id.yes);
+        not_now=(Button)alertDialog.findViewById(R.id.no);
+        alert_veg=(ListView)alertDialog.findViewById(R.id.alert_list);
+
+        buy.setEnabled(true);
+        not_now.setEnabled(true);
+        alert_veg.setEnabled(true);
+
+
+        DatabaseReference refer_master = FirebaseDatabase.getInstance().getReference("users").child(username).child("Master");
+        DatabaseReference refer_thres= FirebaseDatabase.getInstance().getReference("users").child(username).child("Threshold");
+
+
+
+        refer_master.addValueEventListener(new ValueEventListener() {
+            ArrayList<String> keys=new ArrayList<String>();
+            ArrayList<String> values=new ArrayList<String>();
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot subSnap:dataSnapshot.getChildren())
+                {
+                    refer_thres.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot2) {
+
+                            String va_master=dataSnapshot.child(subSnap.getKey()).getValue().toString();   //Master
+                            String va_thres=dataSnapshot2.child(subSnap.getKey()).getValue().toString();  //Threshold
+
+                            Float val_master=Float.parseFloat(va_master);
+                            Float val_thres=Float.parseFloat(va_thres);
+
+                            if(val_thres>val_master){
+                                String va= String.valueOf(val_thres-val_master);
+                                keys.add(subSnap.getKey());
+                                values.add(va);
+
+                                MyAdapter adapter=new MyAdapter(viewInfo.this,keys,values);
+                                alert_veg.setAdapter(adapter);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+        buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(viewInfo.this,"BUY VEGETABLE",Toast.LENGTH_LONG).show();
+            }
+        });
+
+        not_now.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+            }
+        });
+        alertDialog.show();
+
     }
 
     class MyAdapter extends ArrayAdapter<String> {
@@ -182,10 +264,6 @@ public class viewInfo extends AppCompatActivity {
         }
     }
 
-    public void vegetableInformationPopup() {
-
-
-    }
 }
 
 
