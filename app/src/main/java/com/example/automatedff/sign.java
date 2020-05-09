@@ -22,7 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class sign extends AppCompatActivity {
 
-    TextInputLayout regName,regUsername, regEmail, regPhoneNo, regPassword;
+    TextInputLayout regName,regUsername, regEmail, regPhoneNo, regPassword,regLocation;
     Button regBtn,regToLoginBtn;
     RadioGroup radioGroup;
     RadioButton radioButton;
@@ -43,6 +43,7 @@ public class sign extends AppCompatActivity {
         regEmail=findViewById(R.id.reg_email);
         regPhoneNo=findViewById(R.id.reg_phoneNo);
         regPassword=findViewById(R.id.reg_password);
+        regLocation=findViewById(R.id.reg_location);
         regBtn=findViewById(R.id.reg_btn);
         regToLoginBtn=findViewById(R.id.reg_login_btn);
         radioGroup=findViewById(R.id.radioGroup);
@@ -241,8 +242,9 @@ public class sign extends AppCompatActivity {
                     String phone=regPhoneNo.getEditText().getText().toString();
                     String password=regPassword.getEditText().getText().toString();
                     String type=radioButton.getText().toString().equals("Customer")?"Customer":"Vendor";
+                    String location=regLocation.getEditText().getText().toString();
 
-                    Location location=new Location("Kolkata","88.88","22.22");
+                    //Location location=new Location("Kolkata","88.88","22.22");
 
                     UserHelperClass helperClass=new UserHelperClass(name,username,email,phone,password,type,location);
                     reference.child(username).setValue(helperClass);
