@@ -242,7 +242,9 @@ public class sign extends AppCompatActivity {
                     String password=regPassword.getEditText().getText().toString();
                     String type=radioButton.getText().toString().equals("Customer")?"Customer":"Vendor";
 
-                    UserHelperClass helperClass=new UserHelperClass(name,username,email,phone,password,type);
+                    Location location=new Location("Kolkata","88.88","22.22");
+
+                    UserHelperClass helperClass=new UserHelperClass(name,username,email,phone,password,type,location);
                     reference.child(username).setValue(helperClass);
 
                     if(type.equals("Customer")) {
