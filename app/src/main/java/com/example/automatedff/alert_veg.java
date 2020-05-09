@@ -38,7 +38,7 @@ public class alert_veg extends AppCompatActivity {
 
         Intent intent = getIntent();
         final String username = intent.getStringExtra("username");
-        tv.setText(username);
+        tv.setText("username");
 
         Toast.makeText(alert_veg.this, username,Toast.LENGTH_LONG).show();
     }

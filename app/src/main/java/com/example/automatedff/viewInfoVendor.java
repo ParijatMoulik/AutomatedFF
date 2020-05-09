@@ -35,6 +35,7 @@ public class viewInfoVendor extends AppCompatActivity {
     TextView welcome;
 
     Dialog myDialog;
+    TextView myDialog_text;
     Button delete,update;
     FloatingActionButton close;
 
@@ -83,13 +84,18 @@ public class viewInfoVendor extends AppCompatActivity {
                     myDialog.setContentView(R.layout.activity_popup_view_info);
                     myDialog.setTitle("My Custom Dialog");
 
+                    myDialog_text=(TextView)myDialog.findViewById(R.id.pop_veg);
                     delete=(Button)myDialog.findViewById(R.id.delete);
                     update=(Button)myDialog.findViewById(R.id.update);
                     close=(FloatingActionButton)myDialog.findViewById(R.id.close);
 
+                    myDialog_text.setEnabled(true);
                     delete.setEnabled(true);
                     update.setEnabled(true);
                     close.setEnabled(true);
+
+                    String veg = (String) parent.getItemAtPosition(position);
+                    myDialog_text.setText(veg);
 
                     delete.setOnClickListener(new View.OnClickListener() {
                         @Override

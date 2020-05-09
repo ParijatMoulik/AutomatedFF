@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class viewInfo extends AppCompatActivity {
@@ -36,10 +38,12 @@ public class viewInfo extends AppCompatActivity {
     TextView welcome;
 
     Dialog myDialog;
+    TextView myDialog_text;
     Button delete,update;
     FloatingActionButton close;
 
     Dialog alertDialog;
+    TextView alertDialog_text;
     Button buy,not_now;
     ListView alert_veg;
 
@@ -79,17 +83,24 @@ public class viewInfo extends AppCompatActivity {
 
                 list.setOnItemClickListener((parent, view, position, id) -> {
 
+
                     myDialog =new Dialog(viewInfo.this);
                     myDialog.setContentView(R.layout.activity_popup_view_info);
                     myDialog.setTitle("My Custom Dialog");
 
+                    myDialog_text=(TextView)myDialog.findViewById(R.id.pop_veg);
                     delete=(Button)myDialog.findViewById(R.id.delete);
                     update=(Button)myDialog.findViewById(R.id.update);
                     close=(FloatingActionButton)myDialog.findViewById(R.id.close);
 
+                    myDialog_text.setEnabled(true);
                     delete.setEnabled(true);
                     update.setEnabled(true);
                     close.setEnabled(true);
+
+                    String veg= (String) parent.getItemAtPosition(position);
+                    myDialog_text.setText(veg);
+
 
                     delete.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -120,7 +131,6 @@ public class viewInfo extends AppCompatActivity {
                             myDialog.cancel();
                         }
                     });
-
 
                     myDialog.show();
 
@@ -153,23 +163,43 @@ public class viewInfo extends AppCompatActivity {
         //dialog for notification
         //**************************************************************************************
 
+        Intent in_alert=new Intent(viewInfo.this,alert_veg.class);
+        in_alert.putExtra("username",username);
+
         alertDialog =new Dialog(viewInfo.this);
         alertDialog.setContentView(R.layout.activity_alert_veg);
         alertDialog.setTitle("My Custom Alert Dialog");
 
+        alertDialog_text=(TextView)alertDialog.findViewById(R.id.textview_alert);
         buy=(Button)alertDialog.findViewById(R.id.yes);
         not_now=(Button)alertDialog.findViewById(R.id.no);
         alert_veg=(ListView)alertDialog.findViewById(R.id.alert_list);
 
+        alertDialog_text.setEnabled(true);
         buy.setEnabled(true);
         not_now.setEnabled(true);
         alert_veg.setEnabled(true);
 
+        alertDialog_text.setText(username+", you are running out of...");
+
+        buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in_vendor=new Intent(viewInfo.this,vendorList.class);
+                in_vendor.putExtra("username",username);
+                startActivity(in_vendor);
+            }
+        });
+
+        not_now.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+            }
+        });
 
         DatabaseReference refer_master = FirebaseDatabase.getInstance().getReference("users").child(username).child("Master");
         DatabaseReference refer_thres= FirebaseDatabase.getInstance().getReference("users").child(username).child("Threshold");
-
-
 
         refer_master.addValueEventListener(new ValueEventListener() {
             ArrayList<String> keys=new ArrayList<String>();
@@ -196,6 +226,9 @@ public class viewInfo extends AppCompatActivity {
 
                                 MyAdapter adapter=new MyAdapter(viewInfo.this,keys,values);
                                 alert_veg.setAdapter(adapter);
+
+                                if(adapter.getCount()!=0)
+                                    alertDialog.show();
                             }
                         }
 
@@ -212,25 +245,7 @@ public class viewInfo extends AppCompatActivity {
 
             }
         });
-
-
-
-
-        buy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(viewInfo.this,"BUY VEGETABLE",Toast.LENGTH_LONG).show();
-            }
-        });
-
-        not_now.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.cancel();
-            }
-        });
-        alertDialog.show();
-
+        //alertDialog.show();
     }
 
     class MyAdapter extends ArrayAdapter<String> {
